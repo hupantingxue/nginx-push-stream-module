@@ -1,136 +1,27 @@
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width" />
-<title>项目开发之Nginx_push_stream_module使用 | 前端web（web.riaos.com）</title>
-<link rel="profile" href="http://gmpg.org/xfn/11" />
-<link rel="stylesheet" type="text/css" media="all" href="http://web.riaos.com/wp-content/themes/twentyeleven/style.css" />
-<!--[if lt IE 9]>
-<script src="http://web.riaos.com/wp-content/themes/twentyeleven/js/html5.js" type="text/javascript"></script>
-<![endif]-->
-<link rel="alternate" type="application/rss+xml" title="前端web（web.riaos.com） &raquo; Feed" href="http://web.riaos.com/?feed=rss2" />
-<link rel="alternate" type="application/rss+xml" title="前端web（web.riaos.com） &raquo; Comments Feed" href="http://web.riaos.com/?feed=comments-rss2" />
-<script type='text/javascript' src='http://web.riaos.com/wp-includes/js/comment-reply.js?ver=3.4.1'></script>
-<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://web.riaos.com/xmlrpc.php?rsd" />
-<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://web.riaos.com/wp-includes/wlwmanifest.xml" /> 
-<link rel='prev' title='MVC3中给标签添加属性' href='http://web.riaos.com/?p=4025879' />
-<link rel='next' title='window.showModalDialog();会弹出当前页面脚本发生错误部分解决方法' href='http://web.riaos.com/?p=4025881' />
-<meta name="generator" content="WordPress 3.4.1" />
-<link rel='canonical' href='http://web.riaos.com/?p=4025880' />
-    <style>
-        /* Link color */
-        a,
-        #site-title a:focus,
-        #site-title a:hover,
-        #site-title a:active,
-        .entry-title a:hover,
-        .entry-title a:focus,
-        .entry-title a:active,
-        .widget_twentyeleven_ephemera .comments-link a:hover,
-        section.recent-posts .other-recent-posts a[rel="bookmark"]:hover,
-        section.recent-posts .other-recent-posts .comments-link a:hover,
-        .format-image footer.entry-meta a:hover,
-        #site-generator a:hover {
-            color: #7a7948;
-        }
-        section.recent-posts .other-recent-posts .comments-link a:hover {
-            border-color: #7a7948;
-        }
-        article.feature-image.small .entry-summary p a:hover,
-        .entry-header .comments-link a:hover,
-        .entry-header .comments-link a:focus,
-        .entry-header .comments-link a:active,
-        .feature-slider a.active {
-            background-color: #7a7948;
-        }
-    </style>
-    <style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
-    <style type="text/css">
-            #site-title,
-        #site-description {
-            position: absolute !important;
-            clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
-            clip: rect(1px, 1px, 1px, 1px);
-        }
-        </style>
-    <style type="text/css" id="custom-background-css">
-body.custom-background { background-color: #74964B; }
-</style>
-</head>
+<h1>Nginx_push_stream_module使用</h1>
+<p><a href="http://web.riaos.com/?p=4025880">原文在此</a></p>
+<p>Nginx_push_stream是针对nginx开发的第三方服务器推送模块，可以使用它来搭建服务器端的推送服务。项目在https://github.com/wandenberg上。由于项目需要所以看了下作者的几个小的例子，对该模块有了基本了解吧。。简单记录下自己的学习心得吧。。模块的安装就参看官网上的教程就可以了。项目搭建好后可以把其中 example 和 js目录复制到项目测试地址查看数据和测试。提供的pushstream.js文件。功能也很强大。</p>
 
-<body class="single single-post postid-4025880 single-format-standard custom-background single-author singular two-column right-sidebar">
-<div id="page" class="hfeed">
-    <header id="branding" role="banner">
-            <hgroup>
-                <h1 id="site-title"><span><a href="http://web.riaos.com/" title="前端web（web.riaos.com）" rel="home">前端web（web.riaos.com）</a></span></h1>
-                <h2 id="site-description">前端web（web.riaos.com）</h2>
-            </hgroup>
+<p>首先项目下提供了三个例子包括:Forever Ifram EventSource Websocket</p>
+<ul>
+<li>
+ForverIframe:使用轮询方式，在与服务端建立连接后可以看到，客户端代码不断的发出轮询查询，服务端是否有消息，如果有的话就会取出来。
+</li>
 
-            
-                            <div class="only-search">
-                    <form method="get" id="searchform" action="http://web.riaos.com/">
-        <label for="s" class="assistive-text">Search</label>
-        <input type="text" class="field" name="s" id="s" placeholder="Search" />
-        <input type="submit" class="submit" name="submit" id="searchsubmit" value="Search" />
-    </form>
-                </div>
-            
-            <nav id="access" role="navigation">
-                <h3 class="assistive-text">Main menu</h3>
-                                <div class="skip-link"><a class="assistive-text" href="#content" title="Skip to primary content">Skip to primary content</a></div>
-                <div class="skip-link"><a class="assistive-text" href="#secondary" title="Skip to secondary content">Skip to secondary content</a></div>
-                                <div class="menu-ria-container"><ul id="menu-ria" class="menu"><li id="menu-item-4000089" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4000089"><a href="http://www.riaos.com">首页</a></li>
-</ul></div>         </nav><!-- #access -->
-    </header><!-- #branding -->
+<li>
+EventSource
+很显然是事件驱动模型，而且目前主流的浏览器也支持该功能.该功能只有当服务端有事件发生，才会更新客服端请求取消息，也就是名符其实的服务器端推送技术了。
+</li>
 
 
-    <div id="main">
+<li>
+Websocket 是HTML5提出了浏览器的WebSocket API。
+WebSocket的主要作用是，允许服务器端与客户端进行全双工（full-duplex）的通信。举例来说，HTTP协议有点像发电子邮件，发出后必须等待对方回信；WebSocket则是像打电话，服务器端和客户端可以同时向对方发送数据，它们之间存着一条持续打开的数据通道。websocket现在最流行的实现就是socket.io了。
+</li>
 
-        <div id="primary">
-            <div id="content" role="main">
-
-                
-                    <nav id="nav-single">
-                        <h3 class="assistive-text">Post navigation</h3>
-                        <span class="nav-previous"><a href="http://web.riaos.com/?p=4025879" rel="prev"><span class="meta-nav">&larr;</span> Previous</a></span>
-                        <span class="nav-next"><a href="http://web.riaos.com/?p=4025881" rel="next">Next <span class="meta-nav">&rarr;</span></a></span>
-                    </nav><!-- #nav-single -->
-
-                    
-<article id="post-4025880" class="post-4025880 post type-post status-publish format-standard hentry category-web">
-    <header class="entry-header">
-        <h1 class="entry-title">项目开发之Nginx_push_stream_module使用</h1>
-
-                <div class="entry-meta">
-            <span class="sep">Posted on </span><a href="http://web.riaos.com/?p=4025880" title="4:19 pm" rel="bookmark"><time class="entry-date" datetime="2014-03-18T16:19:41+00:00" pubdate>2014/03/18</time></a><span class="by-author"> <span class="sep"> by </span> <span class="author vcard"><a class="url fn n" href="http://web.riaos.com/?author=1" title="View all posts by admin" rel="author">admin</a></span></span>        </div><!-- .entry-meta -->
-            </header><!-- .entry-header -->
-
-    <div class="entry-content">
-        <!-- Easy AdSense (WP) V6.50 -->
-<!-- Post[count: 1] -->
-<div class="ezAdsense adsense adsense-leadin" style="float:right;margin:12px;"><script type="text/javascript"><!--
-                    google_ad_client = "ca-pub-8737769560496570";
-                    /* 详细页面广告 */
-                    google_ad_slot = "4094034239";
-                    google_ad_width = 300;
-                    google_ad_height = 250;
-                    //-->
-                    </script>
-                    <script type="text/javascript"
-                    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-                    </script></div>
-<!-- Easy AdSense (WP) V6.50 -->
-<p><span></span>Nginx_push_stream是针对nginx开发的第三方服务器推送模块，可以使用它来搭建服务器端的推送服务。项目在<a target="_blank" href="https://github.com/wandenberg">https://github.com/wandenberg</a>上，</p>
-<p>由于项目需要所以看了下作者的几个小的例子，对该模块有了基本了解吧。。简单记录下自己的学习心得吧。。模块的安装就参看官网上的教程就可以了。</p>
-<p>项目搭建好后可以把其中 example 和 js 目录复制到项目测试地址查看数据和测试。提供的pushstream.js文件。功能也很强大</p>
-<p><span></span>首先项目下提供了三个例子包括:Forever Ifram  EventSource Websocket</p>
-<p><span></span>ForverIframe:使用轮询方式，在与服务端建立连接后可以看到，客户端代码不断的发出轮询查询，服务端是否有消息，如果有的话就会取出来。</p>
-<p><span></span>EventSource 很显然是事件驱动模型，而且目前主流的浏览器也支持该功能.该功能只有当服务端有事件发生，才会更新客服端请求取消息，也就是名符其实的</p>
-<p>服务器端推送技术了。</p>
-<p><span></span>Websocket 是HTML5提出了浏览器的WebSocket API。<br />
-WebSocket的主要作用是，允许服务器端与客户端进行全双工（full-duplex）的通信。举例来说，HTTP协议有点像发电子邮件，发出后必须等待对方回信；WebSocket则是像打电话，服务器端和客户端可以同时向对方发送数据，它们之间存着一条持续打开的数据通道。websocket现在最流行的实现就是socket.io了。</p>
-<p><span></span>下面是配置文件信息：nginx.conf文件</p>
-</p>
-<pre>location /pub {
+<p>下面是配置文件信息：nginx.conf文件</p>
+<pre><code>
+location /pub {
          push_stream_publisher admin;
          push_stream_channels_path               $arg_id;
     }
@@ -139,72 +30,50 @@ WebSocket的主要作用是，允许服务器端与客户端进行全双工（fu
 
         push_stream_subscriber;
         push_stream_channels_path                   $1;
-        push_stream_header_template                 &quot;&lt;html&gt;&lt;head&gt;&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot;&gt;    rn&lt;meta http-equiv=&quot;Cache-Control&quot; content=&quot;no-store&quot;&gt;rn&lt;meta http-equiv=&quot;Cache-Control&quot; content=&quot;no-cache&quot;&gt;rn&lt;meta http-eq    uiv=&quot;Pragma&quot; content=&quot;no-cache&quot;&gt;rn&lt;meta http-equiv=&quot;Expires&quot; content=&quot;Thu, 1 Jan 1970 00:00:00 GMT&quot;&gt;rn&lt;script type=&quot;text/jav    ascript&quot;&gt;rnwindow.onError = null;rntry{ document.domain = (window.location.hostname.match(/^(d{1,3}.){3}d{1,3}$/)) ? window.locat    ion.hostname : window.location.hostname.split('.').slice(-1 * Math.max(window.location.hostname.split('.').length - 1, (window.location.h    ostname.match(/(w{4,}.w{2}|.w{3,})$/) ? 2 : 3))).join('.');}catch(e){}rnparent.PushStream.register(this);rn&lt;/script&gt;rn&lt;/head&gt;    rn&lt;body&gt;&quot;;
-        push_stream_message_template                &quot;&lt;script&gt;p(~id~,'~channel~','~text~');&lt;/script&gt;&quot;;
-         push_stream_footer_template                 &quot;&lt;/body&gt;&lt;/html&gt;&quot;;
-        #push_stream_message_template                &quot;{&quot;id&quot;:~id~,&quot;channel&quot;:&quot;~channel~&quot;,&quot;text&quot;:&quot;~text~&quot;}&quot;;
-         default_type                                &quot;text/html; charset=utf-8&quot;;
+        push_stream_header_template                 "<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">    rn<meta http-equiv="Cache-Control" content="no-store">rn<meta http-equiv="Cache-Control" content="no-cache">rn<meta http-eq    uiv="Pragma" content="no-cache">rn<meta http-equiv="Expires" content="Thu, 1 Jan 1970 00:00:00 GMT">rn<script type="text/jav    ascript">rnwindow.onError = null;rntry{ document.domain = (window.location.hostname.match(/^(d{1,3}.){3}d{1,3}$/)) ? window.locat    ion.hostname : window.location.hostname.split('.').slice(-1 * Math.max(window.location.hostname.split('.').length - 1, (window.location.h    ostname.match(/(w{4,}.w{2}|.w{3,})$/) ? 2 : 3))).join('.');}catch(e){}rnparent.PushStream.register(this);rn</script>rn</head>    rn<body>";
+        push_stream_message_template                "<script>p(~id~,'~channel~','~text~');</script>";
+         push_stream_footer_template                 "</body></html>";
+        #push_stream_message_template                "{"id":~id~,"channel":"~channel~","text":"~text~"}";
+         default_type                                "text/html; charset=utf-8";
      }
      location ~ /ev/(.*) {
           push_stream_subscriber eventsource;
         push_stream_channels_path                   $1;
-        push_stream_message_template                &quot;{&quot;id&quot;:~id~,&quot;channel&quot;:&quot;~channel~&quot;,&quot;text&quot;:&quot;~text~&quot;}&quot;;
+        push_stream_message_template                "{"id":~id~,"channel":"~channel~","text":"~text~"}";
  
-    }</pre>
-<p>测试文件： index.html</p>
-<!-- Easy AdSense (WP) V6.50 -->
-<!-- Post[count: 2] -->
-<div class="ezAdsense adsense adsense-midtext" style="float:left;margin:12px;"><script type="text/javascript"><!--
-google_ad_client = "ca-pub-8737769560496570";
-/* 内容中间 */
-google_ad_slot = "8054513228";
-google_ad_width = 250;
-google_ad_height = 250;
-//-->
-</script>
-<script type="text/javascript"
-src="//pagead2.googlesyndication.com/pagead/show_ads.js">
-</script></div>
-<!-- Easy AdSense (WP) V6.50 -->
-<p><span></span></p>
-<pre>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01//EN&quot;&quot;http://www.w3.org/TR/html4/strict.dtd&quot;&gt;
-&lt;html&gt;
-&lt;head&gt;
-&lt;meta http-equiv=&quot;Content-type&quot; content=&quot;text/html; charset=utf-8&quot; /&gt;
-&lt;title&gt;Event Source Example&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;p&gt;Messages:&lt;/p&gt;
-&lt;div id=&quot;messages&quot; style=&quot;width:800px;height:300px;overflow:scroll;&quot;&gt;&lt;/div&gt;
+    }
+</code></pre>
 
-&lt;script src=&quot;/js/pushstream.js&quot; type=&quot;text/javascript&quot; language=&quot;javascript&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
-&lt;script type=&quot;text/javascript&quot; language=&quot;javascript&quot; charset=&quot;utf-8&quot;&gt;
-// &lt;![CDATA[
+
+<p>测试文件： index.html</p>
+<pre><code>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN""http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>Event Source Example</title>
+</head>
+<body>
+<p>Messages:</p>
+<div id="messages" style="width:800px;height:300px;overflow:scroll;"></div>
+
+<script src="/js/pushstream.js" type="text/javascript" language="javascript" charset="utf-8"></script>
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
  function messageReceived(text, id, channel) {
-           document.getElementById('messages').innerHTML += id + ': ' + text + '&lt;br&gt;';
+           document.getElementById('messages').innerHTML += id + ': ' + text + '<br>';
  };
 var pushstream = new PushStream({
 host: window.location.hostname,
 port: window.location.port,
-modes: &quot;eventsource&quot;
+modes: "eventsource"
 });
 pushstream.onmessage = messageReceived;
 pushstream.addChannel('ch1');
 pushstream.connect();
-// ]]&gt;
-&lt;/script&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-~             </pre>
-<p>这些都可以在项目文件中和文档说明中招到，然后最后的效果图。。。。</p>
-<p><img src="http://img.blog.csdn.net/20140318143849062?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvd3VqaW5kb3U=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" />
-</p>
-<p>效果图示2：</p>
-<p><img src="http://img.blog.csdn.net/20140318144051390?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvd3VqaW5kb3U=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" />
-</p>
-<p><span></span>上次使用了nodejs&#043;socket.io的方式搭建了私人聊天，这里也简单的比较下吧，</p>
-<p>node&#043;socket.io方案：</p>
-<p><span></span>使用很方便，搭建也比较简单，可以方便灵活根据自己的需要调整，但是需要自己管理服务端的socket进行发送和接收的控制。</p>
-<p>nginx_push_stream_module:</p>
-<p><span></span>使用pub/sub模式，管理简单，但是灵活性就不那么高，比如发送时间过去可能就需要截取信息里面的内容了，所以扩展性不是很好。</p>
-<p>当然，自己也是刚了解了下，所以研究的不深，也许有更强大的功能我还没发掘出来吧。。</p>
+// ]]>
+</script>
+</body>
+</html>
+</code></pre>
+<p>这些都可以在项目文件中和文档说明中找到，然后最后的效果图。。。。</p>
